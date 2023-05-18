@@ -25,7 +25,7 @@ def handle_client(conn, addr):
 def main():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.bind((IP, PORT))
-    print(f"Server : {IP}:{PORT}  | Esperando conexão")
+    print(f"Server : {IP}:{PORT}  | Esperando conexao")
     server.listen()
 
     while True:
@@ -34,5 +34,5 @@ def main():
         thread.start()
         print("Conexoes: ", threading.activeCount()-1)
 
-#if __name__ == "__main__":
+
 main()
