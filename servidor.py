@@ -32,7 +32,7 @@ def main():
         conn, addr = server.accept()
         thread = threading.Thread(target=handle_client, args=(conn, addr))
         thread.start()
-        print("Conexoes: ", threading.activeCount()-1)
+        print("Conexoes: ", threading.active_count()-1)
 
-
-main()
+if __name__ == "__main__":
+    main()
