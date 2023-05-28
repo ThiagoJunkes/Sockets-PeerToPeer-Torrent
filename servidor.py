@@ -7,6 +7,8 @@ SIZE = 1024
 FORMAT = "utf-8"
 DISCONNECT_MSG = "!sair"
 
+peer_list = []
+
 def handle_client(conn, addr):
     print("Nova conexao estabelecida: ", addr)
 
@@ -17,8 +19,10 @@ def handle_client(conn, addr):
         if msg == DISCONNECT_MSG:
             connected = False
         
-        print(f"[{addr}] {msg}")
-        conn.send((f"Received: {msg}").encode(FORMAT))
+        peer_list.append(f"{addr}({msg})")
+        print(peer_list)
+        #print(f"[{addr}] {msg}")
+        #conn.send((f"Received: {msg}").encode(FORMAT))
 
     conn.close()
 

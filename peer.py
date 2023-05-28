@@ -16,15 +16,20 @@ PORT = 50555
 SIZE = 1024
 FORMAT = "utf-8"
 DISCONNECT_MSG = "!sair"
+CONNECTING_MSG = "teste"
 
-files_client = []
+peers_files = []
+my_files = []
+
+def format_list(temp):
+    peers_files.append = temp
 
 def files():
     local = os.path.dirname(os.path.realpath(__file__))
 
     for file in os.listdir(local):
         if file.endswith(".txt"):
-            files_client.append(str(file))
+            my_files.append(str(file))
         
 
 def main():
@@ -35,16 +40,16 @@ def main():
     connected = True
     files()
     while connected:
-        client.send(str(files_client).encode(FORMAT))
+        client.send(str(my_files).encode(FORMAT))
         msg = input("> ")
 
         client.send(msg.encode(FORMAT))
 
         if msg == DISCONNECT_MSG:
             connected = False
-        else:
-            msg = client.recv(SIZE).decode(FORMAT)
-            print(f"[SERVER]: {msg}")
+        elif msg == CONNECTING_MSG:
+            temp = conn.recv(SIZE).decode(FORMAT)
+            format_list(temp)
 
 
 if __name__ == "__main__":
