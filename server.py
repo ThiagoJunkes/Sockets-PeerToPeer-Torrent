@@ -19,10 +19,13 @@ def handle_client(conn, addr):
         if msg == DISCONNECT_MSG:
             connected = False
         
-        peer_list.append(f"{addr}({msg})")
-        print(peer_list)
-        #print(f"[{addr}] {msg}")
-        #conn.send((f"Received: {msg}").encode(FORMAT))
+        if msg == "baixar":
+            conn.send((f"{peer_list}").encode(FORMAT))
+        else:
+            peer_list.append(f"{addr}({msg})")
+            print(peer_list)
+            #print(f"[{addr}] {msg}")
+            #conn.send((f"Received: {msg}").encode(FORMAT))
 
     conn.close()
 

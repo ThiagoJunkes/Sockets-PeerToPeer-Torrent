@@ -33,6 +33,10 @@ def files():
         
 
 def main():
+    if(True):
+        IP = input("IP: ")
+        PORT = int(input("PORT: "))
+    
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client.connect((IP, PORT))
     print(f"Conectado no servidor {IP}:{PORT}")
@@ -47,9 +51,11 @@ def main():
 
         if msg == DISCONNECT_MSG:
             connected = False
-        elif msg == CONNECTING_MSG:
-            temp = conn.recv(SIZE).decode(FORMAT)
-            format_list(temp)
+        
+        if msg == "baixar":
+            temp = client.recv(SIZE).decode(FORMAT)
+            print(temp)
+            #format_list(temp)
 
 
 if __name__ == "__main__":
