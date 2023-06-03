@@ -12,6 +12,8 @@ import socket
 import os
 import threading
 import time
+import re
+import ast
 
 SIZE = 1024
 FORMAT = "utf-8"
@@ -22,7 +24,40 @@ peers_files = []
 my_files = []
 
 def format_list(temp):
-    peers_files.append = temp
+    peers_files.clear
+
+    #ADICIONAR: excluir proprio ip, da lista
+
+    # Extrai o IP e a porta usando uma expressão regular
+    ip_porta = re.findall(r"\('([\d.]+)',\s(\d+)\)", temp)
+    # Extrai a lista de arquivos como uma string
+    lista_arquivos = re.findall(r"\((\[.*?\])\)", temp)
+    
+    # Cria uma lista de dicionários com os dados extraídos
+    dados_conexao = []
+    for i in range(len(ip_porta)):
+        ip, porta = ip_porta[i]
+        arquivos = ast.literal_eval(lista_arquivos[i])
+        dados_conexao.append({
+            'ip': ip,
+            'port': int(porta),
+            'files': arquivos
+        })
+    return dados_conexao
+
+def download_files(client):
+    temp = client.recv(SIZE).decode(FORMAT)
+    peers_files = format_list(temp)
+
+    print("Arquivos para baixar: ")
+    for arquivos in peers_files:
+        print(arquivos['files'])
+
+def select_peer_with_file(file):
+    for peer in peers_files:
+        if file in peer:
+            return peer.split('(')[0]
+    return None
 
 def files():
     local = os.path.dirname(os.path.realpath(__file__))
@@ -70,9 +105,7 @@ def main():
             connected = False
         
         if msg == "!baixar":
-            temp = client.recv(SIZE).decode(FORMAT)
-            print(temp)
-            #format_list(temp)
+            download_files(client)
 
     thread_enviar_arquivos.join()
     client.close()

@@ -30,4 +30,11 @@ for string in strings:
     dados = extrair_dados(string)
     todos_dados.extend(dados)
 
-print(todos_dados)
+# Imprimir apenas o IP
+for dados in todos_dados:
+    print(dados['ip'])
+
+# Imprimir apenas os nomes de arquivo
+for dados in todos_dados:
+    for arquivo in dados['arquivos']:
+        print(arquivo)

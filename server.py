@@ -18,8 +18,7 @@ def handle_client(conn, addr):
         if msg == DISCONNECT_MSG:
             connected = False
             print("Conexao fechada: ", addr)
-        
-        if msg == "!baixar":
+        elif msg == "!baixar":
             conn.send((f"{peer_list}").encode(FORMAT))
         elif "!FILES!" in msg:
             msg = msg.replace("'!FILES!',", "")
