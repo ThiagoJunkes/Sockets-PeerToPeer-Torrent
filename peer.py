@@ -10,7 +10,8 @@
 
 import socket
 import os
-
+import threading
+import time
 
 SIZE = 1024
 FORMAT = "utf-8"
@@ -26,11 +27,18 @@ def format_list(temp):
 def files():
     local = os.path.dirname(os.path.realpath(__file__))
 
+    my_files.clear()
     my_files.append("!FILES!")
     for file in os.listdir(local):
         if file.endswith(".txt"):
             my_files.append(str(file))
-        
+
+def enviar_arquivos_periodicamente(client):
+    while True:
+        time.sleep(180)  # Envio a cada 3 minutos
+        files()
+        client.send(str(my_files).encode(FORMAT))
+        print("Envio automatico")
 
 def main():
     IP = socket.gethostbyname(socket.gethostname())
@@ -46,8 +54,13 @@ def main():
     connected = True
     #Coleta arquivos txt pela primeira vez
     files()
+
     #Envia Arquivos txt para servidor
-    client.send(str(my_files).encode(FORMAT)) 
+    client.send(str(my_files).encode(FORMAT))
+
+    thread_enviar_arquivos = threading.Thread(target=enviar_arquivos_periodicamente, args=(client,))
+    thread_enviar_arquivos.start()
+
     while connected:
         msg = input("> ")
 
@@ -56,11 +69,13 @@ def main():
         if msg == DISCONNECT_MSG:
             connected = False
         
-        if msg == "baixar":
+        if msg == "!baixar":
             temp = client.recv(SIZE).decode(FORMAT)
             print(temp)
             #format_list(temp)
 
+    thread_enviar_arquivos.join()
+    client.close()
 
 if __name__ == "__main__":
     main()

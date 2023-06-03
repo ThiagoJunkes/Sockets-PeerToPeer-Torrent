@@ -17,7 +17,7 @@ def handle_client(conn, addr):
         msg = conn.recv(SIZE).decode(FORMAT)
         if msg == DISCONNECT_MSG:
             connected = False
-            print("Nova conexao fechada: ", addr)
+            print("Conexao fechada: ", addr)
         
         if msg == "!baixar":
             conn.send((f"{peer_list}").encode(FORMAT))
