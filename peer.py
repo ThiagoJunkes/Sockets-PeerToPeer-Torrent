@@ -15,6 +15,12 @@ import time
 import re
 import ast
 
+#Variavel IP Temporario
+#precisa ser alterado para pegar o ip corretamente
+#Desse jeito não funciona nos pcs da UDESC
+IP = socket.gethostbyname(socket.gethostname())
+
+
 SIZE = 1024
 FORMAT = "utf-8"
 DISCONNECT_MSG = "!sair"
@@ -26,7 +32,7 @@ my_files = []
 def format_list(temp):
     peers_files.clear
 
-    #ADICIONAR: excluir proprio ip, da lista
+    #ADICIONAR: excluir proprio ip da lista
 
     # Extrai o IP e a porta usando uma expressão regular
     ip_porta = re.findall(r"\('([\d.]+)',\s(\d+)\)", temp)
@@ -43,6 +49,8 @@ def format_list(temp):
             'port': int(porta),
             'files': arquivos
         })
+    dados_conexao = [dado for dado in dados_conexao if dado['ip'] != IP]
+
     return dados_conexao
 
 def download_files(client):

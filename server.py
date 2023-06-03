@@ -1,7 +1,11 @@
 import socket
 import threading
 
+#Variavel IP Temporario
+#precisa ser alterado para pegar o ip corretamente
+#Desse jeito não funciona nos pcs da UDESC
 IP = socket.gethostbyname(socket.gethostname())
+
 PORT = 50555
 SIZE = 1024
 FORMAT = "utf-8"
