@@ -23,7 +23,12 @@ def handle_client(conn, addr):
             conn.send((f"{peer_list}").encode(FORMAT))
         elif "!FILES!" in msg:
             msg = msg.replace("'!FILES!',", "")
-            peer_list.append(f"{addr}({msg})")
+            ip = f"{addr}"
+            for peer in peer_list:
+                if ip in peer:
+                    peer_list.remove(peer)
+                    break
+            peer_list.append(f"{ip}({msg})")
             print(peer_list)
         else:
             print(msg)
