@@ -32,8 +32,6 @@ my_files = []
 def format_list(temp):
     peers_files.clear
 
-    #ADICIONAR: excluir proprio ip da lista
-
     # Extrai o IP e a porta usando uma expressão regular
     ip_porta = re.findall(r"\('([\d.]+)',\s(\d+)\)", temp)
     # Extrai a lista de arquivos como uma string
