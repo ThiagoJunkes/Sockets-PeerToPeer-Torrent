@@ -11,8 +11,7 @@
 import socket
 import os
 
-IP = socket.gethostbyname(socket.gethostname())
-PORT = 50555
+
 SIZE = 1024
 FORMAT = "utf-8"
 DISCONNECT_MSG = "!sair"
@@ -27,13 +26,16 @@ def format_list(temp):
 def files():
     local = os.path.dirname(os.path.realpath(__file__))
 
+    my_files.append("!FILES!")
     for file in os.listdir(local):
         if file.endswith(".txt"):
             my_files.append(str(file))
         
 
 def main():
-    if(True):
+    IP = socket.gethostbyname(socket.gethostname())
+    PORT = 50555
+    if(False):
         IP = input("IP: ")
         PORT = int(input("PORT: "))
     
@@ -42,9 +44,11 @@ def main():
     print(f"Conectado no servidor {IP}:{PORT}")
 
     connected = True
+    #Coleta arquivos txt pela primeira vez
     files()
+    #Envia Arquivos txt para servidor
+    client.send(str(my_files).encode(FORMAT)) 
     while connected:
-        client.send(str(my_files).encode(FORMAT))
         msg = input("> ")
 
         client.send(msg.encode(FORMAT))

@@ -15,17 +15,18 @@ def handle_client(conn, addr):
     connected = True
     while connected:
         msg = conn.recv(SIZE).decode(FORMAT)
-        
         if msg == DISCONNECT_MSG:
             connected = False
+            print("Nova conexao fechada: ", addr)
         
-        if msg == "baixar":
+        if msg == "!baixar":
             conn.send((f"{peer_list}").encode(FORMAT))
-        else:
+        elif "!FILES!" in msg:
+            msg = msg.replace("'!FILES!',", "")
             peer_list.append(f"{addr}({msg})")
             print(peer_list)
-            #print(f"[{addr}] {msg}")
-            #conn.send((f"Received: {msg}").encode(FORMAT))
+        else:
+            print(msg)
 
     conn.close()
 
