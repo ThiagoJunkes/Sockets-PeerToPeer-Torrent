@@ -15,13 +15,10 @@ import time
 import re
 import ast
 
-#Variavel IP Temporario
-#precisa ser alterado para pegar o ip corretamente
-#Desse jeito não funciona nos pcs da UDESC
-
 SIZE = 1024
 FORMAT = "utf-8"
 DISCONNECT_MSG = "!sair"
+global MY_IP
 
 peers_files = []
 my_files = []
@@ -50,7 +47,8 @@ def format_list(temp):
             'files': arquivos
         })
     #Remove dados do proprio peer
-    dados_conexao = [dado for dado in dados_conexao if dado['ip'] != fetch_ip()]
+    print("MEU IP: ", MY_IP)
+    dados_conexao = [dado for dado in dados_conexao if dado['ip'] != MY_IP]
 
     return dados_conexao
 
@@ -82,10 +80,11 @@ def enviar_arquivos_periodicamente(client):
         time.sleep(180)  # Envio a cada 3 minutos
         files()
         client.send(str(my_files).encode(FORMAT))
-        print("Envio automatico")
 
 def main():
-    print("Ip do Peer: ", fetch_ip())
+    global MY_IP
+    MY_IP = input("Digite o proprio IP: ")
+    print("Meu ip: ", MY_IP)
     if(True):
         IP = input("IP: ")
         PORT = int(input("PORT: "))
@@ -117,6 +116,7 @@ def main():
 
     thread_enviar_arquivos.join()
     client.close()
+
 
 if __name__ == "__main__":
     main()
