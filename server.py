@@ -1,11 +1,6 @@
 import socket
 import threading
 
-#Variavel IP Temporario
-#precisa ser alterado para pegar o ip corretamente
-#Desse jeito não funciona nos pcs da UDESC
-IP = socket.gethostbyname(socket.gethostname())
-
 PORT = 50555
 SIZE = 1024
 FORMAT = "utf-8"
@@ -39,6 +34,7 @@ def handle_client(conn, addr):
     conn.close()
 
 def main():
+    IP = input("Digite o IP: ")
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.bind((IP, PORT))
     print(f"Server : {IP}:{PORT}  | Esperando conexao")
