@@ -23,11 +23,6 @@ global MY_IP
 peers_files = []
 my_files = []
 
-def fetch_ip():
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("8.8.8.8", 80))
-    return s.getsockname()[0]
-
 def format_list(temp):
     peers_files.clear
 
@@ -47,7 +42,6 @@ def format_list(temp):
             'files': arquivos
         })
     #Remove dados do proprio peer
-    print("MEU IP: ", MY_IP)
     dados_conexao = [dado for dado in dados_conexao if dado['ip'] != MY_IP]
 
     return dados_conexao
@@ -56,7 +50,7 @@ def download_files(client):
     temp = client.recv(SIZE).decode(FORMAT)
     peers_files = format_list(temp)
 
-    print("Arquivos para baixar: ")
+    print("Files to download: ")
     for arquivos in peers_files:
         print(arquivos['files'])
 
@@ -83,15 +77,15 @@ def enviar_arquivos_periodicamente(client):
 
 def main():
     global MY_IP
-    MY_IP = input("Digite o proprio IP: ")
-    print("Meu ip: ", MY_IP)
-    if(True):
-        IP = input("IP: ")
-        PORT = int(input("PORT: "))
+    MY_IP = input("Type your IP: ")
+    
+    print("Type Server Adress")
+    IP = input("IP: ")
+    PORT = int(input("PORT: "))
     
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client.connect((IP, PORT))
-    print(f"Conectado no servidor {IP}:{PORT}")
+    print(f"Connected to {IP}:{PORT}")
 
     connected = True
     #Coleta arquivos txt pela primeira vez
