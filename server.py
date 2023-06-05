@@ -14,14 +14,14 @@ DISCONNECT_MSG = "!sair"
 peer_list = []
 
 def handle_client(conn, addr):
-    print("Nova conexao estabelecida: ", addr)
+    print("New connection established: ", addr)
 
     connected = True
     while connected:
         msg = conn.recv(SIZE).decode(FORMAT)
         if msg == DISCONNECT_MSG:
             connected = False
-            print("Conexao fechada: ", addr)
+            print("Connection closed: ", addr)
         elif msg == "!baixar":
             conn.send((f"{peer_list}").encode(FORMAT))
         elif "!FILES!" in msg:
@@ -41,14 +41,14 @@ def handle_client(conn, addr):
 def main():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.bind((IP, PORT))
-    print(f"Server : {IP}:{PORT}  | Esperando conexao")
+    print(f"Server : {IP}:{PORT}  | Waiting connection...")
     server.listen()
 
     while True:
         conn, addr = server.accept()
         thread = threading.Thread(target=handle_client, args=(conn, addr))
         thread.start()
-        print("Conexoes: ", threading.active_count()-1)
+        print("Number of connections: ", threading.active_count()-1)
 
 if __name__ == "__main__":
     main()

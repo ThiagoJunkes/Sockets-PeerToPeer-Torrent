@@ -11,7 +11,7 @@ DISCONNECT_MSG = "!sair"
 def main():
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client.connect((IP, PORT))
-    print(f"Conectado no servidor {IP}:{PORT}")
+    print(f"Connected at Server {IP}:{PORT}")
 
     connected = True
     while connected:
