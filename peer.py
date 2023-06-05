@@ -27,27 +27,28 @@ def format_list(temp):
     peers_files.clear
 
     # Extrai o IP e a porta usando uma expressão regular
-    ip_porta = re.findall(r"\('([\d.]+)',\s(\d+)\)", temp)
+    port_ip = re.findall(r"\('([\d.]+)',\s(\d+)\)", temp)
     # Extrai a lista de arquivos como uma string
     lista_arquivos = re.findall(r"\((\[.*?\])\)", temp)
     
     # Cria uma lista de dicionários com os dados extraídos
-    dados_conexao = []
-    for i in range(len(ip_porta)):
-        ip, porta = ip_porta[i]
-        arquivos = ast.literal_eval(lista_arquivos[i])
-        dados_conexao.append({
+    connection_data = []
+    for i in range(len(port_ip)):
+        ip, port = port_ip[i]
+        files = ast.literal_eval(lista_arquivos[i])
+        connection_data.append({
             'ip': ip,
-            'port': int(porta),
-            'files': arquivos
+            'port': int(port),
+            'files': files
         })
     #Remove dados do proprio peer
-    dados_conexao = [dado for dado in dados_conexao if dado['ip'] != MY_IP]
+    connection_data = [data for data in connection_data if data['ip'] != MY_IP]
 
-    return dados_conexao
+    return connection_data
 
 def download_files(client):
     temp = client.recv(SIZE).decode(FORMAT)
+    global peers_files
     peers_files = format_list(temp)
 
     print("Files to download: ")
@@ -69,7 +70,7 @@ def files():
         if file.endswith(".txt"):
             my_files.append(str(file))
 
-def enviar_arquivos_periodicamente(client):
+def send_files(client):
     while True:
         time.sleep(180)  # Envio a cada 3 minutos
         files()
@@ -88,14 +89,14 @@ def main():
     print(f"Connected to {IP}:{PORT}")
 
     connected = True
+
     #Coleta arquivos txt pela primeira vez
     files()
-
     #Envia Arquivos txt para servidor
     client.send(str(my_files).encode(FORMAT))
 
-    thread_enviar_arquivos = threading.Thread(target=enviar_arquivos_periodicamente, args=(client,))
-    thread_enviar_arquivos.start()
+    thread_send_files = threading.Thread(target=send_files, args=(client,))
+    thread_send_files.start()
 
     while connected:
         msg = input("> ")
@@ -108,7 +109,7 @@ def main():
         if msg == "!baixar":
             download_files(client)
 
-    thread_enviar_arquivos.join()
+    thread_send_files.join()
     client.close()
 
 
