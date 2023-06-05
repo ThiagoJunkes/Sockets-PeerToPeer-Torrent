@@ -18,16 +18,18 @@ import ast
 #Variavel IP Temporario
 #precisa ser alterado para pegar o ip corretamente
 #Desse jeito não funciona nos pcs da UDESC
-IP = socket.gethostbyname(socket.gethostname())
-
 
 SIZE = 1024
 FORMAT = "utf-8"
 DISCONNECT_MSG = "!sair"
-CONNECTING_MSG = "teste"
 
 peers_files = []
 my_files = []
+
+def fetch_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))
+    return s.getsockname()[0]
 
 def format_list(temp):
     peers_files.clear
@@ -47,7 +49,8 @@ def format_list(temp):
             'port': int(porta),
             'files': arquivos
         })
-    dados_conexao = [dado for dado in dados_conexao if dado['ip'] != IP]
+    #Remove dados do proprio peer
+    dados_conexao = [dado for dado in dados_conexao if dado['ip'] != fetch_ip()]
 
     return dados_conexao
 
@@ -82,9 +85,8 @@ def enviar_arquivos_periodicamente(client):
         print("Envio automatico")
 
 def main():
-    IP = socket.gethostbyname(socket.gethostname())
-    PORT = 50555
-    if(False):
+    print("Ip do Peer: ", fetch_ip())
+    if(True):
         IP = input("IP: ")
         PORT = int(input("PORT: "))
     
