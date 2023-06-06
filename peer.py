@@ -71,7 +71,7 @@ def files():
         if file.endswith(".txt"):
             my_files.append(str(file))
             no_files=False
-    if(no_files==False):
+    if(no_files==True):
         my_files.remove("!FILES!")
 
 def send_files(client):
