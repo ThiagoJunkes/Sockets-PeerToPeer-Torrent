@@ -66,9 +66,13 @@ def files():
 
     my_files.clear()
     my_files.append("!FILES!")
+    no_files=True
     for file in os.listdir(local):
         if file.endswith(".txt"):
             my_files.append(str(file))
+            no_files=False
+    if(no_files==False):
+        my_files.remove("!FILES!")
 
 def send_files(client):
     while True:
