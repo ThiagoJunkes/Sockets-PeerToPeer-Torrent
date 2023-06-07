@@ -55,11 +55,46 @@ def download_files(client):
     for arquivos in peers_files:
         print(arquivos['files'])
 
+    rarest, rarest_ip = rarest_file()
+    if(rarest==None):
+        print("Não tem arquivo na rede")
+    else:
+        print(f"Baixar {rarest} do {rarest_ip}")
+
+
 def select_peer_with_file(file):
     for peer in peers_files:
         if file in peer:
             return peer.split('(')[0]
     return None
+
+def rarest_file():
+    rarest = None
+    rarest_ip = None
+    rarest_count = float('inf')
+
+    for peer in peers_files:
+        files = peer['files']
+        for file, count in files.items():
+            if count < rarest_count:
+                rarest = file
+                rarest_ip = peer['ip']
+                rarest_count = count
+
+    # Verifica se pelo menos um arquivo foi encontrado
+    if rarest is not None:
+        return rarest, rarest_ip
+    else:
+        # Retorna o último arquivo percorrido caso não haja um arquivo mais raro
+        last_peer = peers_files[-1] if len(peers_files) > 0 else None
+        if last_peer is not None:
+            files = last_peer['files']
+            last_file = list(files.keys())[-1] if len(files) > 0 else None
+            if last_file is not None:
+                return last_file, last_peer['ip']
+
+    return None, None
+
 
 def files():
     local = os.path.dirname(os.path.realpath(__file__))
@@ -79,6 +114,8 @@ def send_files(client):
         time.sleep(180)  # Envio a cada 3 minutos
         files()
         client.send(str(my_files).encode(FORMAT))
+
+
 
 def main():
     global MY_IP
