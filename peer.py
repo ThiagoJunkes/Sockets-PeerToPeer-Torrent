@@ -75,7 +75,9 @@ def rarest_file():
 
     for peer in peers_files:
         files = peer['files']
-        for file, count in files.items():
+        for file_info in files:
+            file = file_info['name']
+            count = file_info['count']
             if count < rarest_count:
                 rarest = file
                 rarest_ip = peer['ip']
@@ -89,11 +91,13 @@ def rarest_file():
         last_peer = peers_files[-1] if len(peers_files) > 0 else None
         if last_peer is not None:
             files = last_peer['files']
-            last_file = list(files.keys())[-1] if len(files) > 0 else None
-            if last_file is not None:
+            if len(files) > 0:
+                last_file_info = files[-1]
+                last_file = last_file_info['name']
                 return last_file, last_peer['ip']
 
     return None, None
+
 
 
 def files():
