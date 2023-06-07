@@ -69,28 +69,26 @@ def select_peer_with_file(file):
     return None
 
 def rarest_file():
-    rarest = None
-    rarest_ip = None
-    rarest_count = float('inf')
+    if not peers_files:
+        return None
 
+    # Cria um dicionário para armazenar a contagem de cada arquivo
+    file_count = {}
+
+    # Itera sobre cada peer na lista de peers_files
     for peer in peers_files:
         files = peer['files']
-        for file_info in files:
-            file = file_info['name']
-            count = file_info['count']
-            if count < rarest_count:
-                rarest = file
-                rarest_ip = peer['ip']
-                rarest_count = count
 
-    if rarest is not None:
-        return rarest, rarest_ip
+        # Itera sobre cada arquivo no peer
+        for file in files:
+            # Incrementa a contagem do arquivo
+            file_count[file] = file_count.get(file, 0) + 1
 
-    return None, None
+    # Ordena os arquivos com base na contagem (do menos comum para o mais comum)
+    sorted_files = sorted(file_count.items(), key=lambda x: x[1])
 
-
-
-
+    # Retorna o arquivo menos comum (mais raro)
+    return sorted_files[0][0] if sorted_files else None
 
 
 def files():
