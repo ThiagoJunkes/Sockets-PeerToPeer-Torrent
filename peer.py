@@ -55,11 +55,13 @@ def download_files(client):
     for arquivos in peers_files:
         print(arquivos['files'])
 
+    
     rarest = rarest_file()
     if(rarest==None):
         print("Não tem arquivo mais raro")
     else:
-        print(f"Baixar {rarest} do {rarest_ip}")
+        print(f"Baixar {rarest}")
+    
 
 
 def select_peer_with_file(file):
