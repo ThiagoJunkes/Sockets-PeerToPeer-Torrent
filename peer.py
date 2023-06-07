@@ -51,11 +51,16 @@ def download_files(client):
     global peers_files
     peers_files = format_list(temp)
 
-    print("Files to download: ")
-    for arquivos in peers_files:
-        print(arquivos['files'])
+    print("Files to download:")
+    files_to_download = []
+    for peer in peers_files:
+        for file in peer['files']:
+            if file not in my_files:
+                files_to_download.append(file)
+    print(files_to_download)
 
-    
+
+
     rarest = rarest_file()
     if(rarest==None):
         print("Não tem arquivo mais raro")
