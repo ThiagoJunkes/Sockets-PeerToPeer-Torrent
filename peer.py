@@ -55,7 +55,7 @@ def download_files(client):
     for arquivos in peers_files:
         print(arquivos['files'])
 
-    rarest, rarest_ip = rarest_file()
+    rarest = rarest_file()
     if(rarest==None):
         print("Não tem arquivo mais raro")
     else:
