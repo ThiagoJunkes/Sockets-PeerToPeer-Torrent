@@ -55,7 +55,7 @@ def download_files(client):
     files_to_download = []
     for peer in peers_files:
         for file in peer['files']:
-            if file not in my_files:
+            if file not in my_files and file not in files_to_download:
                 files_to_download.append(file)
     print(files_to_download)
 
