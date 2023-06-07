@@ -57,7 +57,7 @@ def download_files(client):
 
     rarest, rarest_ip = rarest_file()
     if(rarest==None):
-        print("Não tem arquivo na rede")
+        print("Não tem arquivo mais raro")
     else:
         print(f"Baixar {rarest} do {rarest_ip}")
 
@@ -75,28 +75,19 @@ def rarest_file():
 
     for peer in peers_files:
         files = peer['files']
-        for file_info in files:
-            file = file_info['name']
-            count = file_info['count']
+        for file in files:
+            count = files[file]
             if count < rarest_count:
                 rarest = file
                 rarest_ip = peer['ip']
                 rarest_count = count
 
-    # Verifica se pelo menos um arquivo foi encontrado
     if rarest is not None:
         return rarest, rarest_ip
-    else:
-        # Retorna o último arquivo percorrido caso não haja um arquivo mais raro
-        last_peer = peers_files[-1] if len(peers_files) > 0 else None
-        if last_peer is not None:
-            files = last_peer['files']
-            if len(files) > 0:
-                last_file_info = files[-1]
-                last_file = last_file_info['name']
-                return last_file, last_peer['ip']
 
     return None, None
+
+
 
 
 
