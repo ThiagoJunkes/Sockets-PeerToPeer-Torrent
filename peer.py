@@ -1,13 +1,3 @@
-#Conectar ao servidor
-#Detectar arquivos no computador
-#Enviar Informações para servidor
-#Conectar com o peer
-#Baixar arquivos do peer
-
-#A cada 3 mim enviar ao servidor lista dos arquivos que possui
-
-#Rarest First
-
 import socket
 import os
 import threading
@@ -15,6 +5,7 @@ import time
 import re
 import ast
 
+PORT = 50550
 SIZE = 1024
 FORMAT = "utf-8"
 DISCONNECT_MSG = "!sair"
@@ -51,8 +42,7 @@ def download_files(client):
     global peers_files
     peers_files = format_list(temp)
 
-    count = 1
-    while True or count < 4:
+    while True:
         files()
         files_to_download = get_files_to_download()
 
@@ -71,8 +61,22 @@ def download_files(client):
             break
 
         print(f"Downloading {rarest_file}")
-        # Implementar lógica para baixar o arquivo "rarest_file" do peer adequado
-        count=+1
+        peer_ip = select_peer_with_file(rarest_file)
+        if(peer_ip == None):
+            print(f"Impossible to download {rarest_file} from {peer_ip}")
+        else:
+            peer_connected = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            peer_connected.connect((peer_ip, PORT))
+            print(f"Connected to {peer_ip}:{PORT}")
+
+            #Envia Arquivos txt que precisa ser baixado
+            peer_connected.send(str(rarest_file).encode(FORMAT))
+
+            #Recebe conteudo do arquivo
+            content = peer_connected.recv(SIZE).decode(FORMAT)
+            with open(rarest_file, "x") as f:
+                f.write(content)
+
 
 def get_rarest_file(files_to_download):
     rarest_file = next(iter(files_to_download))  # Define o primeiro arquivo como o mais raro
@@ -129,7 +133,30 @@ def send_files(client):
         files()
         client.send(str(my_files).encode(FORMAT))
 
+def handle_peer(conn, addr):
+    print(f"Peer {addr} connected")
 
+    connected = True
+    while connected:
+        file = conn.recv(SIZE).decode(FORMAT)
+        with open(file, "r") as f:
+            conteudo = f.read()
+
+        conn.send((f"{conteudo}").encode(FORMAT))
+        connected = False
+
+    print("Connection closed")
+    conn.close()
+
+def reciving_connection():
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind((MY_IP, PORT))
+    server.listen()
+
+    while True:
+        conn, addr = server.accept()
+        thread_peer = threading.Thread(target=handle_peer, args=(conn, addr))
+        thread_peer.start()
 
 def main():
     global MY_IP
@@ -137,11 +164,11 @@ def main():
     
     print("Type Server Adress")
     IP = input("IP: ")
-    PORT = int(input("PORT: "))
+    SERVER_PORT = int(input("PORT: "))
     
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client.connect((IP, PORT))
-    print(f"Connected to {IP}:{PORT}")
+    client.connect((IP, SERVER_PORT))
+    print(f"Connected to {IP}:{SERVER_PORT}")
 
     connected = True
 
@@ -152,6 +179,9 @@ def main():
 
     thread_send_files = threading.Thread(target=send_files, args=(client,))
     thread_send_files.start()
+
+    thread_peer_connection = threading.Thread(target=reciving_connection)
+    thread_peer_connection.start()
 
     while connected:
         msg = input("> ")
