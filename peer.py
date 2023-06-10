@@ -59,6 +59,20 @@ def download_files(client):
                 files_to_download.append(file)
     print(files_to_download)
 
+    files_rarity = []
+    for peer in peers_files:
+        for file in peer['files']:
+            found = False
+            for item in files_rarity:
+                if item['file'] == file:
+                    item['count'] += 1
+                    found = True
+                    break
+            if not found:
+                files_rarity.append({'file': file, 'count': 1})
+
+    print(files_rarity)
+
 
 
     rarest = rarest_file()
@@ -101,6 +115,7 @@ def rarest_file():
 def files():
     local = os.path.dirname(os.path.realpath(__file__))
 
+    global my_files
     my_files.clear()
     my_files.append("!FILES!")
     no_files=True
