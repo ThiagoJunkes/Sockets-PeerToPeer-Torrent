@@ -12,11 +12,18 @@ def handle_client(conn, addr):
     print("New Connection Established: ", addr)
 
     connected = True
+    global peer_list
     while connected:
         msg = conn.recv(SIZE).decode(FORMAT)
         if msg == DISCONNECT_MSG:
+            for peer in peer_list:
+                ip = f"{addr}"
+                if ip in peer:
+                    peer_list.remove(peer)
+                    break
             connected = False
             print("Connection Closed: ", addr)
+            print(": ",peer_list)
         elif msg == "!baixar":
             conn.send((f"{peer_list}").encode(FORMAT))
         elif "!FILES!" in msg:
@@ -27,7 +34,7 @@ def handle_client(conn, addr):
                     peer_list.remove(peer)
                     break
             peer_list.append(f"{ip}({msg})")
-            print(peer_list)
+            print(": ",peer_list)
         else:
             print(msg)
 
