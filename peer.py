@@ -51,36 +51,28 @@ def download_files(client):
     global peers_files
     peers_files = format_list(temp)
 
-    print("Files to download:")
-    files_to_download = []
-    for peer in peers_files:
-        for file in peer['files']:
-            if file not in my_files and file not in files_to_download:
-                files_to_download.append(file)
-    print(files_to_download)
-
-    files_rarity = []
-    for peer in peers_files:
-        for file in peer['files']:
-            found = False
-            for item in files_rarity:
-                if item['file'] == file:
-                    item['count'] += 1
-                    found = True
-                    break
-            if not found:
-                files_rarity.append({'file': file, 'count': 1})
-
-    print(files_rarity)
-
-
-
-    rarest = rarest_file()
-    if(rarest==None):
-        print("Não tem arquivo mais raro")
-    else:
-        print(f"Baixar {rarest}")
+    files_to_download = get_files_to_download()
     
+    print("Files to download:")
+    for file, info in files_to_download.items():
+        if info[1]:  # Verifica se o arquivo está disponível para download
+            print(f"File: {file}, Rarity: {info[0]}")
+
+    
+def get_files_to_download():
+    files_info = {}
+
+    for peer in peers_files:
+        for file in peer['files']:
+            if file not in my_files:
+                if file in files_info:
+                    # O arquivo já está na estrutura, incrementa a contagem de raridade
+                    files_info[file][0] += 1
+                else:
+                    # O arquivo é novo, adiciona à estrutura
+                    files_info[file] = [1, True]
+
+    return files_info
 
 
 def select_peer_with_file(file):
@@ -89,7 +81,7 @@ def select_peer_with_file(file):
             return peer.split('(')[0]
     return None
 
-def rarest_file():
+#def rarest_file():
     if not peers_files:
         return None
 
