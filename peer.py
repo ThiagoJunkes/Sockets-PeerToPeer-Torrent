@@ -51,12 +51,40 @@ def download_files(client):
     global peers_files
     peers_files = format_list(temp)
 
-    files_to_download = get_files_to_download()
-    
-    print("Files to download:")
+    count = 1
+    while True or count < 4:
+        files()
+        files_to_download = get_files_to_download()
+
+        if not files_to_download:
+            print("No files to download.")
+            break
+
+        print("Files to download:")
+        for file, info in files_to_download.items():
+            if info[1]:  # Verifica se o arquivo está disponível para download
+                print(f"File: {file}, Rarity: {info[0]}")
+
+        rarest_file = get_rarest_file(files_to_download)
+        if rarest_file is None:
+            print("No rarest file found.")
+            break
+
+        print(f"Downloading {rarest_file}")
+        # Implementar lógica para baixar o arquivo "rarest_file" do peer adequado
+        count=+1
+
+def get_rarest_file(files_to_download):
+    rarest_file = next(iter(files_to_download))  # Define o primeiro arquivo como o mais raro
+    rarity_count = float('inf')
+
     for file, info in files_to_download.items():
-        if info[1]:  # Verifica se o arquivo está disponível para download
-            print(f"File: {file}, Rarity: {info[0]}")
+        if info[1] and info[0] < rarity_count:  # Verifica se o arquivo está disponível e tem menor contagem de raridade
+            rarest_file = file
+            rarity_count = info[0]
+
+    return rarest_file
+
 
     
 def get_files_to_download():
@@ -80,29 +108,6 @@ def select_peer_with_file(file):
         if file in peer:
             return peer.split('(')[0]
     return None
-
-#def rarest_file():
-    if not peers_files:
-        return None
-
-    # Cria um dicionário para armazenar a contagem de cada arquivo
-    file_count = {}
-
-    # Itera sobre cada peer na lista de peers_files
-    for peer in peers_files:
-        files = peer['files']
-
-        # Itera sobre cada arquivo no peer
-        for file in files:
-            # Incrementa a contagem do arquivo
-            file_count[file] = file_count.get(file, 0) + 1
-
-    # Ordena os arquivos com base na contagem (do menos comum para o mais comum)
-    sorted_files = sorted(file_count.items(), key=lambda x: x[1])
-
-    # Retorna o arquivo menos comum (mais raro)
-    return sorted_files[0][0] if sorted_files else None
-
 
 def files():
     local = os.path.dirname(os.path.realpath(__file__))
