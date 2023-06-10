@@ -109,9 +109,10 @@ def get_files_to_download():
 
 def select_peer_with_file(file):
     for peer in peers_files:
-        if file in peer:
-            return peer.split('(')[0]
+        if file in peer['files']:
+            return peer['ip']
     return None
+
 
 def files():
     local = os.path.dirname(os.path.realpath(__file__))
