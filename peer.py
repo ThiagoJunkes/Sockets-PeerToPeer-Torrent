@@ -44,6 +44,8 @@ def download_files(client):
 
     while True:
         files()
+        #Manda lista de arquivos atuais para o servidor
+        client.send(str(my_files).encode(FORMAT))
         files_to_download = get_files_to_download()
 
         if not files_to_download:
@@ -76,6 +78,8 @@ def download_files(client):
             content = peer_connected.recv(SIZE).decode(FORMAT)
             with open(rarest_file, "x") as f:
                 f.write(content)
+            
+            
 
 
 def get_rarest_file(files_to_download):
@@ -130,9 +134,9 @@ def files():
 
 def send_files(client):
     while True:
-        time.sleep(180)  # Envio a cada 3 minutos
         files()
         client.send(str(my_files).encode(FORMAT))
+        time.sleep(180)  # Envio a cada 3 minutos
 
 def handle_peer(conn, addr):
     print(f"Peer {addr} connected")
@@ -191,6 +195,7 @@ def main():
 
         if msg == DISCONNECT_MSG:
             connected = False
+            break
         
         if msg == "!baixar":
             download_files(client)
