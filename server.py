@@ -9,14 +9,21 @@ DISCONNECT_MSG = "!sair"
 peer_list = []
 
 def handle_client(conn, addr):
-    print("Nova conexao estabelecida: ", addr)
+    print("New Connection Established: ", addr)
 
     connected = True
+    global peer_list
     while connected:
         msg = conn.recv(SIZE).decode(FORMAT)
         if msg == DISCONNECT_MSG:
+            for peer in peer_list:
+                ip = f"{addr}"
+                if ip in peer:
+                    peer_list.remove(peer)
+                    break
             connected = False
-            print("Conexao fechada: ", addr)
+            print("Connection Closed: ", addr)
+            print(": ",peer_list)
         elif msg == "!baixar":
             conn.send((f"{peer_list}").encode(FORMAT))
         elif "!FILES!" in msg:
@@ -27,7 +34,7 @@ def handle_client(conn, addr):
                     peer_list.remove(peer)
                     break
             peer_list.append(f"{ip}({msg})")
-            print(peer_list)
+            print(": ",peer_list)
         else:
             print(msg)
 
@@ -37,14 +44,14 @@ def main():
     IP = input("Type Servers IP: ")
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.bind((IP, PORT))
-    print(f"Server : {IP}:{PORT}  | Esperando conexao")
+    print(f"Server : {IP}:{PORT}  | Waiting for connections")
     server.listen()
 
     while True:
         conn, addr = server.accept()
         thread = threading.Thread(target=handle_client, args=(conn, addr))
         thread.start()
-        print("Conexoes: ", threading.active_count()-1)
+        print("Connections: ", threading.active_count()-1)
 
 if __name__ == "__main__":
     main()
