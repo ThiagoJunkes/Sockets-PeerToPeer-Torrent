@@ -1,5 +1,6 @@
 import socket
 import threading
+import time
 
 #PORT = 50555
 SIZE = 1024
@@ -7,6 +8,7 @@ FORMAT = "utf-8"
 DISCONNECT_MSG = "!sair"
 
 peer_list = []
+peer_ghost = []
 
 class Server: 
     def handle_client(conn, addr):
@@ -35,10 +37,22 @@ class Server:
                         peer_list.remove(peer)
                         break
                 peer_list.append(f"{ip}({msg})")
+                peer_ghost.append({"ip": ip, "count": 3})
                 print(": ",peer_list)
 
         conn.close()
 
+    def decrease_ghost_peer():
+        while True:
+            time.sleep(120)  # Espera por 2 minutos
+            
+            for peer in peer_ghost:
+                peer["count"] -= 1
+                if peer["count"] == 0:
+                    peer_ghost.remove(peer)  # Remove o par da lista peer_ghost
+
+            print("Updated Peer List: ", peer_list)
+    
     def main():
         IP = input("Type Servers IP: ")
         PORT = int(input("PORT: "))
@@ -46,6 +60,9 @@ class Server:
         server.bind((IP, PORT))
         print(f"Server : {IP}:{PORT}  | Waiting for connections")
         server.listen()
+
+        ghost_thread = threading.Thread(target=Server.decrease_ghost_peer)
+        ghost_thread.start()
 
         while True:
             conn, addr = server.accept()
