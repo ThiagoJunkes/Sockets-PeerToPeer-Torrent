@@ -42,6 +42,7 @@ def download_files(client):
     temp = client.recv(SIZE).decode(FORMAT)
     global peers_files
     peers_files = format_list(temp)
+    print("Peer files: ",peers_files)
 
     while True:
         files()
