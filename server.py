@@ -1,7 +1,7 @@
 import socket
 import threading
 
-PORT = 50555
+#PORT = 50555
 SIZE = 1024
 FORMAT = "utf-8"
 DISCONNECT_MSG = "!sair"
@@ -35,13 +35,12 @@ def handle_client(conn, addr):
                     break
             peer_list.append(f"{ip}({msg})")
             print(": ",peer_list)
-        else:
-            print(msg)
 
     conn.close()
 
 def main():
     IP = input("Type Servers IP: ")
+    PORT = int(input("PORT: "))
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.bind((IP, PORT))
     print(f"Server : {IP}:{PORT}  | Waiting for connections")
