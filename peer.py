@@ -49,6 +49,7 @@ def download_files(client):
         client.send(str(my_files).encode(FORMAT))
         files_to_download = get_files_to_download()
 
+        print("Files to download:", files_to_download)
         if not files_to_download:
             print("No files to download.")
             break
