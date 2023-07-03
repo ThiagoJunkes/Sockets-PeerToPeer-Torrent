@@ -16,7 +16,7 @@ peers_files = []
 my_files = []
 
 def format_list(temp):
-    peers_files.clear()
+    peers_files.clear
 
     # Extrai o IP e a porta usando uma expressão regular
     port_ip = re.findall(r"\('([\d.]+)',\s(\d+)\)", temp)
@@ -38,12 +38,10 @@ def format_list(temp):
 
     return connection_data
 
-
 def download_files(client):
     temp = client.recv(SIZE).decode(FORMAT)
     global peers_files
     peers_files = format_list(temp)
-    print("Peer files: ",peers_files)
 
     while True:
         files()
@@ -51,7 +49,6 @@ def download_files(client):
         client.send(str(my_files).encode(FORMAT))
         files_to_download = get_files_to_download()
 
-        print("Files to download:", files_to_download)
         if not files_to_download:
             print("No files to download.")
             break
@@ -108,19 +105,13 @@ def get_files_to_download():
         for file in peer['files']:
             if file not in my_files:
                 if file in files_info:
-                    # O arquivo já está na estrutura, atualiza a contagem de raridade
+                    # O arquivo já está na estrutura, incrementa a contagem de raridade
                     files_info[file][0] += 1
                 else:
                     # O arquivo é novo, adiciona à estrutura
-                    files_info[file] = [1, False]  # Define o arquivo como não disponível
-
-    # Verifica se o arquivo está disponível em outros pares
-    for file in files_info.keys():
-        available = any(file in peer['files'] for peer in peers_files)
-        files_info[file][1] = available
+                    files_info[file] = [1, True]
 
     return files_info
-
 
 
 def select_peer_with_file(file):
