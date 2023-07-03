@@ -16,32 +16,36 @@ peers_files = []
 my_files = []
 
 def format_list(temp):
-    peers_files.clear
+    peers_files.clear()
+    print("dentro", temp)
 
-    # Extrai o IP e a porta usando uma expressão regular
-    port_ip = re.findall(r"\('([\d.]+)',\s(\d+)\)", temp)
+    # Extrai o IP usando uma expressão regular
+    ip = re.findall(r"([\d.]+)\(", temp)
+
     # Extrai a lista de arquivos como uma string
     lista_arquivos = re.findall(r"\((\[.*?\])\)", temp)
-    
+
     # Cria uma lista de dicionários com os dados extraídos
     connection_data = []
-    for i in range(len(port_ip)):
-        ip, port = port_ip[i]
+    for i in range(len(ip)):
         files = ast.literal_eval(lista_arquivos[i])
         connection_data.append({
-            'ip': ip,
-            'port': int(port),
+            'ip': ip[i],
             'files': files
         })
-    #Remove dados do proprio peer
+
+    # Remove dados do próprio peer
     connection_data = [data for data in connection_data if data['ip'] != MY_IP]
 
     return connection_data
 
+
 def download_files(client):
     temp = client.recv(SIZE).decode(FORMAT)
     global peers_files
-    peers_files = format_list(temp)
+    peers_files = format_list(str(temp))
+    print("temp: ", temp)
+    print("peer files: ", peers_files)
 
     while True:
         files()
