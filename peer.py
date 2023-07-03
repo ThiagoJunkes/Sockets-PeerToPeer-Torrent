@@ -16,7 +16,7 @@ peers_files = []
 my_files = []
 
 def format_list(temp):
-    peers_files.clear
+    peers_files.clear()
 
     # Extrai o IP e a porta usando uma expressão regular
     port_ip = re.findall(r"\('([\d.]+)',\s(\d+)\)", temp)
@@ -37,6 +37,7 @@ def format_list(temp):
     connection_data = [data for data in connection_data if data['ip'] != MY_IP]
 
     return connection_data
+
 
 def download_files(client):
     temp = client.recv(SIZE).decode(FORMAT)
