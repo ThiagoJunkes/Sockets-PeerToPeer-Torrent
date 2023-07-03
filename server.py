@@ -41,7 +41,7 @@ class Server:
                         peer_list.remove(peer)
                         break
                 peer_list.append(f"{ip}({msg})")
-                print(msg)
+                
                 peer_ghost.append({"ip": ip, "count": 3})
                 print(": ", peer_list)
 
@@ -54,11 +54,8 @@ class Server:
             for peer in peer_ghost:
                 peer["count"] -= 1
                 if peer["count"] == 0:
-                    peers_to_remove.append(peer)
-
-            for peer in peers_to_remove:
-                peer_ghost.remove(peer)
-                peer_list.remove(peer)
+                    peer_ghost.remove(peer)
+                    peer_list.remove(peer)
 
             print("Updated Peer List: ", peer_list)
 
