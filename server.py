@@ -42,7 +42,15 @@ class Server:
                         break
                 peer_list.append(f"{ip}({msg})")
                 
-                peer_ghost.append({"ip": ip, "count": 3})
+                found_peer = False
+                for peer in peer_ghost:
+                    if peer["ip"] == ip:
+                        peer["count"] = 3  # Atualiza o campo count
+                        found_peer = True
+                        break
+                if not found_peer:
+                    peer_ghost.append({"ip": ip, "count": 3})
+                
                 print(": ", peer_list)
 
         conn.close()
@@ -54,10 +62,20 @@ class Server:
             for peer in peer_ghost:
                 peer["count"] -= 1
                 if peer["count"] == 0:
-                    peer_ghost.remove(peer)
-                    peer_list.remove(peer)
+                    peers_to_remove.append(peer)
 
-            print("Updated Peer List: ", peer_list)
+            for peer in peers_to_remove:
+                peer_ghost.remove(peer)
+                ip = peer["ip"]
+                for item in peer_list:
+                    if ip in item:
+                        peer_list.remove(item)
+                        break
+                print("Updated Peer List: ", peer_list)
+            
+
+            
+            
 
     def start(self):
         print(f"Server: {self.ip}:{self.port} | Waiting for connections")
