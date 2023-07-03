@@ -105,13 +105,19 @@ def get_files_to_download():
         for file in peer['files']:
             if file not in my_files:
                 if file in files_info:
-                    # O arquivo já está na estrutura, incrementa a contagem de raridade
+                    # O arquivo já está na estrutura, atualiza a contagem de raridade
                     files_info[file][0] += 1
                 else:
                     # O arquivo é novo, adiciona à estrutura
-                    files_info[file] = [1, True]
+                    files_info[file] = [1, False]  # Define o arquivo como não disponível
+
+    # Verifica se o arquivo está disponível em outros pares
+    for file in files_info.keys():
+        available = any(file in peer['files'] for peer in peers_files)
+        files_info[file][1] = available
 
     return files_info
+
 
 
 def select_peer_with_file(file):
