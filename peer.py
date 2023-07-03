@@ -5,6 +5,7 @@ import time
 import re
 import ast
 
+
 PORT = 50550
 SIZE = 1024
 FORMAT = "utf-8"
@@ -67,9 +68,10 @@ def download_files(client):
         if(peer_ip == None):
             print(f"Impossible to download {rarest_file} from {peer_ip}")
         else:
-            peer_connected = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            peer_connected.connect((peer_ip, PORT))
-            if peer_connected.fileno() != -1:
+            try:
+                peer_connected = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                peer_connected.connect((peer_ip, PORT))
+            
                 print(f"Connected to {peer_ip}:{PORT}")
                 #Envia Arquivos txt que precisa ser baixado
                 peer_connected.send(str(rarest_file).encode(FORMAT))
@@ -78,8 +80,8 @@ def download_files(client):
                 content = peer_connected.recv(SIZE).decode(FORMAT)
                 with open(rarest_file, "x") as f:
                     f.write(content)
-            else:
-                print("Peer not found, try again in a few minutes!")
+            except Exception:
+                print("Peer not found or connection refused, try again in a few minutes!")
                 break
 
 
