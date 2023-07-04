@@ -49,6 +49,7 @@ def download_files(client):
 
     while True:
         files()
+        time.sleep(2)
         #Manda lista de arquivos atuais para o servidor
         client.send(str(my_files).encode(FORMAT))
         files_to_download = get_files_to_download()
